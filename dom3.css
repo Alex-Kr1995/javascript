@@ -1,0 +1,9 @@
+.container {
+    height: 800px;
+    width: 1000px;
+    margin: 0 auto;
+    border: 4px solid rgb(173, 172, 255);
+}
+.someClass {
+    font-size: 30px;
+}
