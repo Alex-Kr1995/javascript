@@ -3,28 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <title>shop</title>
 </head>
 <body>
-<div class="parent">
-<div id="test">
-<button id="button">Кнопка</button>
-<div class="testClass">TestClass</div>
-    <p class="paragraph">Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde, tempore.</p>
-    <p class="paragraph testP">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi tenetur, fugiat alias recusandae sint quae?</p>
-    <p class="paragraph">Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus quod placeat, esse doloremque maxime perspiciatis sequi?</p>
-</div>
-</div>
-<div class="testChanges">
-    <ul>
-        <li class="item1">item1</li>
-        <li class="item2">item2</li>
-        <li class="item3">item3</li>
-    </ul>
-</div>
-</body>
-<!-- <script src="index.js"></script>
-<script src="index1.js"></script> -->
-<script src="user1.js"></script> 
+    <div class="tabs">
+        <button class="tab" data-tab-id="goods">Shop</button>
+        <span class="separator">|</span>
+        <button class="tab cart-tab" data-tab-id="cart">Cart</button>
+        <span class="separator">|</span>
+        <button class="tab" data-tab-id="exit">Выйти</button>
+    </div>
 
+    <div class="product_items">
+        <div class="product_item">
+            <div class="img">Типа картинка товара </div>
+            <div class="product_list">
+                 <h3>Уроки по css</h3>
+                <p class="price">300 р</p>
+                <button class="button">В корзину</button>
+            </div>
+        </div>
+        <div class="product_item">
+                <div class="img">Типа картинка товара</div>
+                <div class="product_list">
+                    <h3>Уроки по js</h3>
+                    <p class="price">500 р</p>
+                    <button class="button">В корзину</button>
+                </div>
+                
+        </div>
+        <div class="product_item">
+            <div class="img">Типа картинка товара</div>
+            <div class="product_list">
+                <h3>Уроки по html</h3>
+                <p class="price">400 р</p>
+                <button class="button">В корзину</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="cart_items">
+        <div class="cart_item">
+            <div class="cart_item_title">Уроки по css</div>
+            <div class="cart_item_count">3шт.</div>
+            <div class="cart_item_price">150р</div>
+        </div>
+        <div class="cart_item">
+            <div class="cart_item_title">Уроки по js</div>
+            <div class="cart_item_count">3шт.</div>
+            <div class="cart_item_price">150р</div>
+        </div>
+        <div class="cart_item">
+            <div class="cart_item_title">Уроки по html</div>
+            <div class="cart_item_count">3шт.</div>
+            <div class="cart_item_price">150р</div>
+        </div>
+    </div>
+
+    
+</body>
+<script src="index.js"></script>
 </html>
