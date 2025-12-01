@@ -29,7 +29,7 @@ background: linear-gradient(-45deg, #fee1e9 0%, #edd5e1 50%, #aed0db 100%);
     cursor: pointer;  
 }
 .cart-tab::after {
-    content: "5";
+    content: attr(data-goods-count);
     display: flex;  
     justify-content: center;
     align-items: center;
@@ -42,7 +42,7 @@ background: linear-gradient(-45deg, #fee1e9 0%, #edd5e1 50%, #aed0db 100%);
     border-radius: 50%;
 }
 .tab.active{
-    pointer-events: none;
+    /* pointer-events: none; */
     color: #2196f3
 }
 .tab:hover{
