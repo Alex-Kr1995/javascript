@@ -54,7 +54,7 @@ background: linear-gradient(-45deg, #fee1e9 0%, #edd5e1 50%, #aed0db 100%);
     width: 250px;
     background: rgb(167, 255, 236);
 }
-.product_items{
+.product-items{
     display: flex;
     align-items: center;
     justify-content: center;

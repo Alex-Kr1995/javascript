@@ -4,6 +4,7 @@
 // // У нас несколько вариантов, один из них - создать обработчик событий клика и в зависимости от цели выполнить функцию обработчик
 // // Ниже показано пару вариантов как получить id из data-аттрибута
 
+
 // function clickHandler(event){
 //     //console.dir(event.target.dataset.id) // Первый способ отличить кнопки - по id из data-attribute
 //     // console.dir(event.target.getAttribute('data-id')) // Второй способ отличить кнопки - по id из data-attribute
@@ -43,7 +44,7 @@ const tabWithCounter = document.querySelector('[data-goods-count]');
 
 const goodsInCart = []
 let activeTabId = 'goods' //если не будет значения в самом начале -код сломается
-const tabsContainer = document.querySelector('.tabs');
+
 renderTabContentById(activeTabId);
 
 const addToCartButtons = document.querySelectorAll('button[data-add-to-cart="true"]');
@@ -102,13 +103,15 @@ function clickHandler(event){
 // Вот тут начинается следующий урок 17.2, но выше тоже парочку вещей скорректировали
 
 function renderTabContentById(tabId){
-    let html = '';
+    const tabsContainer = document.querySelector('.tabs');
     if(  tabId === 'goods'){
-        html = renderGoods();
+    const html =  renderGoods();   
+        tabsContainer.after(html); //Из-за того что теперь html это реальный html-тег а не строка как раньше, используется after (это аналог afterend из insertAdjacentHTML)
     } else {
-    html = renderCart();
-    }
+    const html = renderCart();
     tabsContainer.insertAdjacentHTML('afterend', html)
+    }
+    
 } 
 function removeActiveTabContent(){
     const activeContent = document.querySelector(`
@@ -117,36 +120,23 @@ function removeActiveTabContent(){
     activeContent.remove()
 }
 function renderGoods(){
-    return `<div data-active-tab-content="true" class="product_items">
-        <div class="product_item">
-            <div class="img">Типа картинка товара </div>
-            <div class="product_list">
-                 <h3>Уроки по css</h3>
-                <p class="price">300 р</p>
-                <button data-add-to-cart="true" class="button" >В корзину</button>
-            </div>
-        </div>
-        <div class="product_item">
-                <div class="img">Типа картинка товара</div>
+    const div = document.createElement('div')
+    div.dataset.activeTabContent = "true";
+    div.className = 'product-items';
+    for(let i = 0; i < GOODS.length; i++){
+        const product = GOODS[i];
+        div.insertAdjacentHTML('beforeend', `
+            <div class="product_item">
+                <div class="img">Типа картинка товара </div>
                 <div class="product_list">
-                    <h3>Уроки по js</h3>
-                    <p class="price">500 р</p>
+                    <h3>${product.name}</h3>
+                    <p class="price">${product.price}$</p>
                     <button data-add-to-cart="true" class="button" >В корзину</button>
                 </div>
-                
-        </div>
-        <div class="product_item">
-            <div class="img">Типа картинка товара</div>
-            <div class="product_list">
-                <h3>Уроки по html</h3>
-                <p class="price">400 р</p>
-                <button data-add-to-cart="true" class="button" >В корзину</button>
             </div>
-
-        </div>
-    </div>
-    
-    `
+            `)
+    }
+    return div;
 }
 function renderCart(){
     return `    <div data-active-tab-content="true" class="cart_items">
