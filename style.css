@@ -74,6 +74,7 @@ background: linear-gradient(-45deg, #fee1e9 0%, #edd5e1 50%, #aed0db 100%);
 .product_list{
     background: #fafafa;
     padding: 15px 0;
+
 }
 .product_list h3{
     font-size: 18px;
@@ -111,8 +112,13 @@ button:hover{
 }
 .cart_item{
 display: grid;
-grid-template-columns: repeat(3, 1fr);
+grid-template-columns: repeat(4, 1fr);
 }
 .cart_item_price{
 font-weight: bold;
+}
+.cart_item_delete{
+    background-color: red;
+    height: 20px;
+    width: 20px;
 }

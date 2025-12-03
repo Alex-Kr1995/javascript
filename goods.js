@@ -6,5 +6,5 @@ const GOODS = [{
     price: 100
 },{
     name: 'Уроки по JS',
-    price: 200
+    price: null
 }]

@@ -38,22 +38,23 @@
 // не думаю что в этом примере это проблема, но если элементов было бы больше то это стало бы проблемой. Поэтому:
 
 
+const goodsInCart = [{name: 'Test towar', price: 500}]
 const tabs = document.querySelectorAll('button.tab')
 
 const tabWithCounter = document.querySelector('[data-goods-count]');
 
-const goodsInCart = []
-let activeTabId = 'goods' //если не будет значения в самом начале -код сломается
+let activeTabId = 'cart' //если не будет значения в самом начале -код сломается
 
 renderTabContentById(activeTabId);
 
 const addToCartButtons = document.querySelectorAll('button[data-add-to-cart="true"]');
 
-function addToCartHandler(e){
-    const product = createProduct();
-
-    goodsInCart.push(product);
+function addToCartHandler(product ){
+    return () => {
+         goodsInCart.push(product);
     tabWithCounter.dataset.goodsCount = goodsInCart.length;
+    }
+   
 }
 function addClickListeners(buttons, handler, event = 'click'){
     for (let i = 0; i < buttons.length; i++){
@@ -66,10 +67,10 @@ initialTab.classList.add('active');
 
 addClickListeners(tabs, clickHandler)
 
-function createProduct(){
+function createProduct(product){
     return {
-        name: 'Уроки по HTML',
-        price: 500,
+        name: product.name,
+        price: product.price,
     }
 }
 
@@ -103,14 +104,14 @@ function clickHandler(event){
 // Вот тут начинается следующий урок 17.2, но выше тоже парочку вещей скорректировали
 
 function renderTabContentById(tabId){
+    let html = null;
     const tabsContainer = document.querySelector('.tabs');
     if(  tabId === 'goods'){
-    const html =  renderGoods();   
-        tabsContainer.after(html); //Из-за того что теперь html это реальный html-тег а не строка как раньше, используется after (это аналог afterend из insertAdjacentHTML)
+     html =  renderGoods();   
     } else {
-    const html = renderCart();
-    tabsContainer.insertAdjacentHTML('afterend', html)
+    html = renderCart();
     }
+    tabsContainer.after(html); //Из-за того что теперь html это реальный html-тег а не строка как раньше, используется after (это аналог afterend из insertAdjacentHTML)
     
 } 
 function removeActiveTabContent(){
@@ -123,38 +124,88 @@ function renderGoods(){
     const div = document.createElement('div')
     div.dataset.activeTabContent = "true";
     div.className = 'product-items';
+
+
     for(let i = 0; i < GOODS.length; i++){
-        const product = GOODS[i];
-        div.insertAdjacentHTML('beforeend', `
-            <div class="product_item">
-                <div class="img">Типа картинка товара </div>
-                <div class="product_list">
-                    <h3>${product.name}</h3>
-                    <p class="price">${product.price}$</p>
-                    <button data-add-to-cart="true" class="button" >В корзину</button>
-                </div>
+        const product = createProduct(GOODS[i]);
+        
+      
+       
+        
+        const price = product.price === null ? `<p>Товар закончился</p>` : `<p class="price">${product.price}$</p>`;
+        // console.log(price)
+
+        const productBlock = document.createElement('div');
+        productBlock.className = 'product_item';
+        productBlock.innerHTML =  `
+            <div class="img">Типа картинка товара </div>
+            <div class="product-list">
+                <h3>${product.name}</h3>
+                <p class="price">${price}</p>
             </div>
-            `)
+        `;
+        if(product.price !== null) {
+        const clickHandler = addToCartHandler(product);
+        const button = document.createElement('button');
+        button.className = 'button';
+        button.textContent = 'В корзину'
+        button.addEventListener('click',  clickHandler);
+
+        productBlock.querySelector('.product-list').append(button);
+    } 
+    div.append(productBlock)
+
+        
     }
     return div;
 }
-function renderCart(){
-    return `    <div data-active-tab-content="true" class="cart_items">
-        <div class="cart_item">
-            <div class="cart_item_title">Уроки по css</div>
+function renderCart() {
+    const container = document.createElement('div');
+    container.className = 'cart_items';
+    container.dataset.activeTabContent = 'true';
+    for(let i = 0; i < goodsInCart.length; i++){
+        const item = goodsInCart[i];
+        console.log(item)
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart_item';
+        cartItem.innerHTML = `
+            <div class="cart_item_title">${item.name}</div>
             <div class="cart_item_count">3шт.</div>
-            <div class="cart_item_price">150р</div>
-        </div>
-        <div class="cart_item">
-            <div class="cart_item_title">Уроки по js</div>
-            <div class="cart_item_count">3шт.</div>
-            <div class="cart_item_price">150р</div>
-        </div>
-        <div class="cart_item">
-            <div class="cart_item_title">Уроки по html</div>
-            <div class="cart_item_count">3шт.</div>
-            <div class="cart_item_price">150р</div>
-        </div>
-    </div>`
-}
+            <div class="cart_item_price">${item.price}р</div>
+    
+    `
+    const btn = document.createElement('button');
+    btn.className = 'cart_item_delete';
+    // btn.textContent = 'x'
+    btn.innerText = 'x';
+    cartItem.append(btn)
 
+    container.append(cartItem)
+    }
+    return container;
+    //     cartItem
+    
+
+
+
+    // return `    <div data-active-tab-content="true" class="cart_items">
+    //     <div class="cart_item">
+    //         <div class="cart_item_title">Уроки по css</div>
+    //         <div class="cart_item_count">3шт.</div>
+    //         <div class="cart_item_price">150р</div>
+    //         <button class='cart_item_delete'>х</button>
+    //     </div>
+    //     <div class="cart_item">
+    //         <div class="cart_item_title">Уроки по js</div>
+    //         <div class="cart_item_count">3шт.</div>
+    //         <div class="cart_item_price">150р</div>
+    //         <button class='cart_item_delete'>х</button>
+    //     </div>
+    //     <div class="cart_item">
+    //         <div class="cart_item_title">Уроки по html</div>
+    //         <div class="cart_item_count">3шт.</div>
+    //         <div class="cart_item_price">150р</div>
+    //         <button class='cart_item_delete'>х</button>
+    //     </div>
+    // </div>`
+}
