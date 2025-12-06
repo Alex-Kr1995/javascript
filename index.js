@@ -38,7 +38,9 @@
 // не думаю что в этом примере это проблема, но если элементов было бы больше то это стало бы проблемой. Поэтому:
 
 
-const goodsInCart = [{name: 'Test towar', price: 500}]
+let goodsInCart = [
+   
+]
 const tabs = document.querySelectorAll('button.tab')
 
 const tabWithCounter = document.querySelector('[data-goods-count]');
@@ -49,12 +51,74 @@ renderTabContentById(activeTabId);
 
 const addToCartButtons = document.querySelectorAll('button[data-add-to-cart="true"]');
 
-function addToCartHandler(product ){
+function addToCartHandler(product){
     return () => {
-         goodsInCart.push(product);
-    tabWithCounter.dataset.goodsCount = goodsInCart.length;
+        let hasProduct = false;
+        let index = null;
+        let count = 1;
+
+       for(let i = 0; i < goodsInCart.length; i++){
+        const productInCart = goodsInCart[i];
+        if(product.id === productInCart.id){
+            hasProduct = true; 
+            index = i;
+            count = productInCart.count;
+           
+        }
+
+        }
+
+        if(hasProduct){
+             goodsInCart[index].count += 1;
+          
+        } else {
+            const productWithCount = {...product, count: 1};
+            goodsInCart.push(productWithCount);
+        }
+        let fullSize = 0;
+        for(let i = 0; i < goodsInCart.length; i++){
+            const productInCart = goodsInCart[i];
+            fullSize += productInCart.count;
+        }
+        tabWithCounter.dataset.goodsCount = fullSize;
+ 
+         
     }
    
+}
+
+function removeFromCart(productId){
+    
+    return ()=> {
+        const newGoodsInCart = [];
+       
+        for( let i = 0; i < goodsInCart.length ; i++){
+            const product = goodsInCart[i];
+
+            if(productId === product.id){
+                if(product.count > 1){
+                    newGoodsInCart.push({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        count: product.count - 1,
+                    })
+                    updateCartItem(product.id, product.count, product.price)
+                    tabWithCounter.dataset.goodsCount = tabWithCounter.dataset.goodsCount -= 1; 
+                } else {
+                    tabWithCounter.dataset.goodsCount = tabWithCounter.dataset.goodsCount -= 1;
+                     updateCartItem(product.id, 0)
+                }
+            } else {newGoodsInCart.push(product)}
+
+        }
+        goodsInCart = newGoodsInCart;
+        
+
+        // -
+
+        
+    }
 }
 function addClickListeners(buttons, handler, event = 'click'){
     for (let i = 0; i < buttons.length; i++){
@@ -69,6 +133,7 @@ addClickListeners(tabs, clickHandler)
 
 function createProduct(product){
     return {
+        id: product.id,
         name: product.name,
         price: product.price,
     }
@@ -163,18 +228,21 @@ function renderCart() {
     const container = document.createElement('div');
     container.className = 'cart_items';
     container.dataset.activeTabContent = 'true';
+    container.dataset.activeTabContent = 'true';
     for(let i = 0; i < goodsInCart.length; i++){
         const item = goodsInCart[i];
-        console.log(item)
         const cartItem = document.createElement('div');
+        cartItem.dataset.elementId = item.id;
         cartItem.className = 'cart_item';
         cartItem.innerHTML = `
             <div class="cart_item_title">${item.name}</div>
-            <div class="cart_item_count">3шт.</div>
-            <div class="cart_item_price">${item.price}р</div>
+            <div class="cart_item_count">${item.count} шт.</div>
+            <div class="cart_item_price">${item.price * item.count}р</div>
     
     `
     const btn = document.createElement('button');
+       const clickHandler = removeFromCart(item.id)
+       btn.addEventListener('click', clickHandler )
     btn.className = 'cart_item_delete';
     // btn.textContent = 'x'
     btn.innerText = 'x';
@@ -183,29 +251,21 @@ function renderCart() {
     container.append(cartItem)
     }
     return container;
-    //     cartItem
+}
+function updateCartItem(id, count, price){
     
-
-
-
-    // return `    <div data-active-tab-content="true" class="cart_items">
-    //     <div class="cart_item">
-    //         <div class="cart_item_title">Уроки по css</div>
-    //         <div class="cart_item_count">3шт.</div>
-    //         <div class="cart_item_price">150р</div>
-    //         <button class='cart_item_delete'>х</button>
-    //     </div>
-    //     <div class="cart_item">
-    //         <div class="cart_item_title">Уроки по js</div>
-    //         <div class="cart_item_count">3шт.</div>
-    //         <div class="cart_item_price">150р</div>
-    //         <button class='cart_item_delete'>х</button>
-    //     </div>
-    //     <div class="cart_item">
-    //         <div class="cart_item_title">Уроки по html</div>
-    //         <div class="cart_item_count">3шт.</div>
-    //         <div class="cart_item_price">150р</div>
-    //         <button class='cart_item_delete'>х</button>
-    //     </div>
-    // </div>`
+    const cartItem = document.querySelector(`[data-element-id="${id}"]`);
+    if(count > 1 ){
+        let fullPrice = count * price;
+        const countElement = cartItem.querySelector('.cart_item_count');
+        const fullPriceElement = cartItem.querySelector('.cart_item_price');
+        fullPriceElement.textContent = `${fullPrice-price}р`;
+        countElement.textContent = `${count -1 } шт.`;
+        // fullPriceElement.textContent = `${fullPriceElement}`;
+        console.log( `${fullPriceElement} aahhahasd`)
+    }   
+    else  {
+        console.log( ' ))))))))))))))))))')
+         cartItem.remove();
+    }
 }
